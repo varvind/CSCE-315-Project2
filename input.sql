@@ -11,7 +11,7 @@ INNER JOIN users as u
 ON r.user_id = u.user_id;
 SELECT business_id, name, attributes_id FROM attr WHERE takeout="true" AND open24hours = "true";
 
-SELECT business_id, name, attributes_id FROM attr WHERE "state"="TX" AND goodforkids= "true" AND restaurantstableservice = "true" AND music_background_music = "true";
+SELECT business_id, name, attributes_id FROM attr WHERE "state"="TX" AND goodforkids= "true" AND restaurantstableservice = "true" AND music_background_music = "true"; /*good for kids and restuarants table service and background music */
 select business.business_id, business.name from business, attr where business.is_open=1 and attr.happyhour = "true" and business.business_id = attr.business_id; /*business is open and happy hour attribute */
 select user_id, name from users where users.fans > 20; /*users with more than 20 fans*/
 select review.review_id, review.business_id, review.text from review, business where  review.business_id = business.business_id and review.stars > 4 and business.is_open = 1; /*reviews for businesses with 4 stars that are open*/
@@ -20,29 +20,17 @@ select attr.business_id, attr.name, review.text, review.user_id from review, att
 SELECT users.user_id, users.name, review.text, tip.text FROM users, tip, review WHERE users.user_id = tip.user_id and tip.user_id = review.user_id; /*reviews and tips from same user*/
 SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_kosher="true" AND dietaryrestrictions_halal = "true" AND goodforkids = "true";
 select review.review_id, attr.business_id, business.name, review.text, users.name from review, business, users, attr where  review.user_id = users.user_id and business.business_id = review.business_id  and attr.music_jukebox = "true" and business.is_open = 1; /*reviews for businesses with jukebox music that are open*/
-select business.business_id, business.name from business, attr where business.is_open=1 and attr.businessparking_garage = "true" attr.goodforkids = "true" and business.business_id = attr.business_id;
-SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_dairy_free="true" AND dietaryrestrictions_gluten_free = "true";
+select business.business_id, business.name from business, attr where business.is_open=1 and attr.businessparking_garage = "true" attr.goodforkids = "true" and business.business_id = attr.business_id; /*good for kids and parking garage*/
+SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_dairy_free="true" AND dietaryrestrictions_gluten_free = "true"; /*dairy free and gluten free*/
 select review.review_id, attr.business_id, review.text, review.user_id, business.name from review, business, attr where  review.business_id = business.business_id and attr.business_id = business.business_id and review.stars < 3 and business.is_open = 0; /*reviews for businesses with low reviews and not open*/
 select review.review_id, attr.business_id, review.text, review.user_id, business.name from review, business, attr where  review.business_id = business.business_id and attr.business_id = business.business_id and review.stars >3 and attr.hairspecializesin_perms = "true"; /*good hair perm places */
 select attr.business_id, tip.text, business.name, tip.user_id from tip, business, attr where  tip.business_id = business.business_id and attr.business_id = business.business_id and review.stars > 3 and attr.goodformeal_dessert = "true"; /*tips for dessert places */
 SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name FROM review, attr WHERE attr.business_id = review.business_id and review.funny > 8 and attr.alcohol = "true"; /*funny yelp reviews about businesses that serve alcohol*/
 /*helpful reviews for restuarants good for groups in New York City */
-SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name, business.city FROM review, attr, business WHERE attr.business_id = review.business_id and review.business_id = business.business_id and review.helpful > 9 and attr.restaurantsgoodforgroups = "true" and business.city = "New York City"; /*funny yelp reviews about businesses that serve alcohol*/
+SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name, business.city FROM review, attr, business WHERE attr.business_id = review.business_id and review.business_id = business.business_id and review.helpful > 9 and attr.restaurantsgoodforgroups = "true" and business.city = "New York City";
+/*useful reviews for restuarants good for dinner and outdoor seating in Los Angeles */
+SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name, business.city FROM review, attr, business WHERE attr.business_id = review.business_id and review.business_id = business.business_id and review.useful > 8 and attr.outdoorseating = "true" and attr.goodformeal_dinner = "true" and business.city = "Los Angeles"; 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*helpful reviews for curly hair for groups in Houston */
+SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name, business.city FROM review, attr, business WHERE attr.business_id = review.business_id and review.business_id = business.business_id and review.helpful > 6 and attr.hairspecializesin_curly = "true" and business.city = "Houston"; 
 
