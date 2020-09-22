@@ -1,5 +1,4 @@
 SELECT attributes_id, business_id, name FROM business WHERE city="Houston";
-
 SELECT attributes_id, business_id, name FROM business WHERE stars > 4.8 AND review_count > 500;
 FROM review as r /*left table*/
 INNER JOIN tips as t /*list reviews and photos from the same business */
@@ -13,7 +12,6 @@ ON r.user_id = u.user_id;
 SELECT business_id, name, attributes_id FROM attr WHERE takeout="true" AND open24hours = "true";
 
 SELECT business_id, name, attributes_id FROM attr WHERE "state"="TX" AND goodforkids= "true" AND restaurantstableservice = "true" AND music_background_music = "true";
-
 select business.business_id, business.name from business, attr where business.is_open=1 and attr.happyhour = "true" and business.business_id = attr.business_id; /*business is open and happy hour attribute */
 select user_id, name from users where users.fans > 20; /*users with more than 20 fans*/
 select review.review_id, review.business_id, review.text from review, business where  review.business_id = business.business_id and review.stars > 4 and business.is_open = 1; /*reviews for businesses with 4 stars that are open*/
@@ -27,6 +25,10 @@ SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_dair
 select review.review_id, attr.business_id, review.text, review.user_id, business.name from review, business, attr where  review.business_id = business.business_id and attr.business_id = business.business_id and review.stars < 3 and business.is_open = 0; /*reviews for businesses with low reviews and not open*/
 select review.review_id, attr.business_id, review.text, review.user_id, business.name from review, business, attr where  review.business_id = business.business_id and attr.business_id = business.business_id and review.stars >3 and attr.hairspecializesin_perms = "true"; /*good hair perm places */
 select attr.business_id, tip.text, business.name, tip.user_id from tip, business, attr where  tip.business_id = business.business_id and attr.business_id = business.business_id and review.stars > 3 and attr.goodformeal_dessert = "true"; /*tips for dessert places */
+SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name FROM review, attr WHERE attr.business_id = review.business_id and review.funny > 8 and attr.alcohol = "true"; /*funny yelp reviews about businesses that serve alcohol*/
+/*helpful reviews for restuarants good for groups in New York City */
+SELECT review.review_id, review.user_id, attr.business_id, review.text, attr.name, business.city FROM review, attr, business WHERE attr.business_id = review.business_id and review.business_id = business.business_id and review.helpful > 9 and attr.restaurantsgoodforgroups = "true" and business.city = "New York City"; /*funny yelp reviews about businesses that serve alcohol*/
+
 
 
 
