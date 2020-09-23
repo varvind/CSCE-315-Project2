@@ -76,28 +76,46 @@ WHERE a.ambience_intimate = 'True';
 --12
 SELECT b.name FROM business AS b
 INNER JOIN attr AS a ON b.business_id = a.business_id
-WHERE a.restaurantsdelivery = 'True' AND goodformeal_breakfast = 'True';; 
+WHERE a.restaurantsdelivery = 'True' AND goodformeal_breakfast = 'True'; 
 /*All the resturants names that serve breakfast and do delivery*/
 
 
---13 (not checked yet)
-SELECT users.user_id, users.name, review.text, tip.text FROM users, tip, review WHERE users.user_id = tip.user_id and tip.user_id = review.user_id; /*reviews and tips from same user*/
+--13 (No syntax error)
+SELECT u.name, b.name AS business, r.text AS review FROM users AS u
+INNER JOIN review AS r ON u.user_id = r.user_id
+INNER JOIN business AS b ON b.business_id = r.business_id
+ORDER BY u.name, b.name; 
+/*All reviews for all users ordererd by user and then by business*/
 
 
---14 (not checked yet)
-SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_kosher="true" AND dietaryrestrictions_halal = "true" AND goodforkids = "true";
+--14
+SELECT b.name FROM business AS b
+INNER JOIN attr AS a ON b.business_id = a.business_id
+WHERE a.dietaryrestrictions_halal = 'True';
+/*All the restuarnats who serve halal food*/
 
 
---15 (not checked yet)
-SELECT review.review_id, attr.business_id, business.name, review.text, users.name from review, business, users, attr where  review.user_id = users.user_id and business.business_id = review.business_id  and attr.music_jukebox = "true" and business.is_open = 1; /*reviews for businesses with jukebox music that are open*/
+
+--15 (No syntax error)
+SELECT b.name, u.name AS user, r.text AS review , a.music_jukebox FROM business AS b
+INNER JOIN attr AS a ON a.business_id = b.business_id
+INNER JOIN review AS r ON r.business_id = b.business_id
+INNER JOIN users AS u ON u.user_id = r.user_id
+WHERE a.music_jukebox = 'True';
+/*Reviews for all the business that play jukebox music*/
 
 
---16 (not checked yet)
-SELECT business.business_id, business.name from business, attr where business.is_open=1 and attr.businessparking_garage = "true" attr.goodforkids = "true" and business.business_id = attr.business_id; /*good for kids and parking garage*/
+--16
+SELECT b.name FROM business
+INNER JOIN attr AS a ON b.business_id = a.business_id 
+WHERE b.is_open=1 AND a.businessparking_garage = 'True' AND a.goodforkids = 'True';
+/*All businesses that are currently open, offer parking garage parking, and are good for kids*/
 
-
---17 (not checked yet)
-SELECT business_id, name, attributes_id FROM attr WHERE dietaryrestrictions_dairy_free="true" AND dietaryrestrictions_gluten_free = "true"; /*dairy free and gluten free*/
+--17
+SELECT b.name FROM business AS b
+INNER JOIN attr AS a ON b.business_id = a.business_id 
+WHERE a.dietaryrestrictions_dairy_free = 'True' AND dietaryrestrictions_gluten_free = 'True';
+/*All restaurants that have dairy free and gluten free options*/
 
 
 --18 (not checked yet)
