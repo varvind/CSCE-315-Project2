@@ -1,10 +1,13 @@
 --1
-SELECT name, city, attribute_id, business_id FROM business WHERE city = 'Houston'; 
+SELECT name, city, attribute_id, business_id FROM business 
+WHERE city = 'Houston'; 
 /*View all businesses in Houston*/
 
 
 --2
-SELECT name, stars, review_count FROM business WHERE stars > 4.8 AND review_count > 20 ORDER BY stars, review_count; 
+SELECT name, stars, review_count FROM business 
+WHERE stars > 4.8 AND review_count > 20 
+ORDER BY stars, review_count; 
 /*View businesses with at least a 4.8 rating and 20 reviews. Orders them first by rating, then by number of reviews*/
 
 
@@ -15,7 +18,7 @@ ON t.business_id = b.business_id WHERE b.name = 'Starbucks';
 /*View all tips from Starbucks*/
 
 
---4 (IDK takes a long time)
+--4 
 SELECT b.name as name, r.text AS review FROM review AS r
 INNER JOIN business AS b /*list reviews and  from the same business */
 ON b.business_id = r.business_id WHERE b.name = 'Starbucks';
@@ -55,19 +58,26 @@ SELECT user_id, name FROM users WHERE users.fans > 20;
 /*users with more than 20 fans*/
 
 
---10 (not checked yet)
+--10 (No sytnax error)
 SELECT b.name, r.text FROM business as b
 INNER JOIN review as r ON r.business_id = b.business_id
 WHERE b.stars > 4 and b.is_open = 1; 
 /*Reviews for businesses with 4 stars that are currently open*/
 
 
---11 (not checked yet)
-SELECT attr.business_id, attr.name, checkin.text from attr, checkin where attr.business_id = checkin.business_id and attr.ambience_intimate = "true"; /*checkins at intimate ambience restaurants*/
+--11
+SELECT b.name, a.ambience_intimate, c.date from attr as a
+INNER JOIN checkin c ON c.business_id = a.business_id
+INNER JOIN business b ON b,businss_id = a.business_id
+WHERE a.ambience_intimate = 'True'; 
+/*All the checkins at restaurants with an intimate ambience*/
 
 
---12 (not checked yet)
-SELECT attr.business_id, attr.name, review.text, review.user_id from review, attr where attr.business_id = review.business_id and restaurantsdelivery = "true" and goodformeal_breakfast = "true"; /*breakfast delivery restaurant*/
+--12
+SELECT b.name FROM business AS b
+INNER JOIN attr AS a ON b.business_id = a.business_id
+WHERE a.restaurantsdelivery = 'True' AND goodformeal_breakfast = 'True';; 
+/*All the resturants names that serve breakfast and do delivery*/
 
 
 --13 (not checked yet)
