@@ -5,19 +5,24 @@
  */
 package project2.pkg315;
 
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dialog.ModalityType;
-
+import java.sql.*;
 /**
  *
  * @author arvin
  */
 public class App extends javax.swing.JFrame {
-
+    private boolean isLoggedIn;
+    private final static String DB_STRING =
+            "jdbc:postgresql://csce-315-db.engr.tamu.edu/db908_group18_project2";
+    private Connection conn;
     /**
      * Creates new form App
      */
     public App() {
+        isLoggedIn = false;
         initComponents();
     }
 
@@ -37,13 +42,14 @@ public class App extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         userPassword = new javax.swing.JPasswordField();
         loginUser = new javax.swing.JButton();
+        loginMessage = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         loginButton = new javax.swing.JButton();
+        connectionLabel = new javax.swing.JLabel();
 
         loginDialog.setMinimumSize(new java.awt.Dimension(500, 400));
-        loginDialog.setPreferredSize(new java.awt.Dimension(250, 250));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -79,25 +85,27 @@ public class App extends javax.swing.JFrame {
         loginDialog.getContentPane().setLayout(loginDialogLayout);
         loginDialogLayout.setHorizontalGroup(
             loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(loginDialogLayout.createSequentialGroup()
-                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(loginDialogLayout.createSequentialGroup()
-                        .addGap(153, 153, 153)
-                        .addComponent(jLabel3))
-                    .addGroup(loginDialogLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(38, 38, 38)
-                        .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(userUserName)
-                            .addComponent(userPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(61, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginDialogLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 210, Short.MAX_VALUE)
                 .addComponent(loginUser)
-                .addGap(160, 160, 160))
+                .addGap(179, 179, 179))
+            .addGroup(loginDialogLayout.createSequentialGroup()
+                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(loginMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(loginDialogLayout.createSequentialGroup()
+                            .addGap(153, 153, 153)
+                            .addComponent(jLabel3))
+                        .addGroup(loginDialogLayout.createSequentialGroup()
+                            .addGap(40, 40, 40)
+                            .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel4)
+                                .addComponent(jLabel5))
+                            .addGap(38, 38, 38)
+                            .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(userUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(userPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         loginDialogLayout.setVerticalGroup(
             loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,9 +120,11 @@ public class App extends javax.swing.JFrame {
                 .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(userPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(loginMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(loginUser)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -143,6 +153,9 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        connectionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        connectionLabel.setText("Status: Not Connected");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -161,7 +174,10 @@ public class App extends javax.swing.JFrame {
                         .addGap(358, 358, 358))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(302, 302, 302))))
+                        .addGap(302, 302, 302))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(connectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(437, 437, 437))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,7 +188,9 @@ public class App extends javax.swing.JFrame {
                     .addComponent(loginButton))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(87, 87, 87)
+                .addGap(18, 18, 18)
+                .addComponent(connectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(352, Short.MAX_VALUE))
         );
@@ -183,13 +201,6 @@ public class App extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        // TODO add your handling code here:
-        loginDialog.setModalityType(ModalityType.APPLICATION_MODAL);
-        loginDialog.setVisible(true);
-        
-    }//GEN-LAST:event_loginButtonActionPerformed
 
     private void userUserNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userUserNameActionPerformed
         // TODO add your handling code here:
@@ -202,9 +213,33 @@ public class App extends javax.swing.JFrame {
     private void loginUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginUserActionPerformed
         // TODO add your handling code here:
         String userName = userUserName.getText();
-        char[] passCode = userPassword.getPassword();
-        loginDialog.setVisible(false);
+        String passCode = new String(userPassword.getPassword());
+        if(userPassword.getPassword().length == 0 || userName == "") {
+            loginMessage.setText("Error: Missing Fields");
+        } else {
+            try {
+                Class.forName("org.postgresql.Driver");
+                conn = DriverManager.getConnection(DB_STRING, userName, passCode);
+                isLoggedIn = true;
+                connectionLabel.setText("Status: Connected");
+                connectionLabel.setForeground(Color.green);
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                loginMessage.setText("Error connecting to database, please try again");
+                        
+            }
+        }
+        if(isLoggedIn) {
+            loginDialog.setVisible(false);    
+        }
+        
     }//GEN-LAST:event_loginUserActionPerformed
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        // TODO add your handling code here:
+        loginDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+        loginDialog.setVisible(true);
+    }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,6 +277,7 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel connectionLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -250,6 +286,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loginButton;
     private javax.swing.JDialog loginDialog;
+    private javax.swing.JLabel loginMessage;
     private javax.swing.JButton loginUser;
     private javax.swing.JPasswordField userPassword;
     private javax.swing.JTextField userUserName;
