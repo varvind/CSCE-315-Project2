@@ -322,6 +322,12 @@ public class AppMain extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             String business_name = query.getText(); 
+            if(business_name.contains("\'")) {
+                business_name = business_name.substring(0, business_name.indexOf("\'")) 
+                        + "\'\'" 
+                        + business_name.substring(business_name.indexOf("\'") + 1);
+            }
+            System.out.println(business_name);
             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             String sqlStatement = "SELECT * FROM business WHERE name = " + "\'" 
                     + business_name + "\'";
