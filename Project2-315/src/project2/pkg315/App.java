@@ -299,12 +299,23 @@ public class App extends javax.swing.JFrame {
                     + business_name + "\'";
             //send statement to DBMS
             ResultSet result = stmt.executeQuery(sqlStatement);
+           
+            String city = "";
+            String stars = "";      
+            int city_string_len = 0;
+            int stars_string_len = 0;
+            
+            String business_info = String.format("%-50s%-50s%-20s", "Business Name", "City", "Rating") + "\n";
              while (result.next()) {
+                 city = result.getString("city");
+                 stars = result.getString("stars");
+                 city_string_len = city.length();
+                 stars_string_len = stars.length();
             //output    
-             business_name += result.getString("name")+ " " + result.getString("city") + " " +  result.getString("stars")  + "\n";
+             business_info += String.format("%-50s%-50s%-20s", result.getString("name"), city, stars)+ "\n";
              
            } 
-             resultsText.setText(business_name);
+             resultsText.setText(business_info);
              //Search.addActionListener((ActionListener) outputDialog);
              outputDialog.setModalityType(ModalityType.APPLICATION_MODAL);
              outputDialog.setVisible(true);
