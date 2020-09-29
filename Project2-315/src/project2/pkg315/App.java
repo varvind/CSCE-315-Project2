@@ -224,7 +224,6 @@ public class App extends javax.swing.JFrame {
                 connectionLabel.setText("Status: Connected");
                 connectionLabel.setForeground(Color.green);
             } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
                 loginMessage.setText("Error connecting to database, please try again");
                         
             }
