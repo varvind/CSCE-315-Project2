@@ -295,13 +295,13 @@ public class App extends javax.swing.JFrame {
         try {
             String business_name = query.getText(); 
             Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT* FROM business WHERE name = " + "\'" 
+            String sqlStatement = "SELECT * FROM business WHERE name = " + "\'" 
                     + business_name + "\'";
             //send statement to DBMS
             ResultSet result = stmt.executeQuery(sqlStatement);
              while (result.next()) {
             //output    
-             business_name += result.getString("stars")+ " " + result.getString("name") + "\n";
+             business_name += result.getString("name")+ " " + result.getString("city") + " " +  result.getString("stars")  + "\n";
              
            } 
              resultsText.setText(business_name);
