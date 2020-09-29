@@ -300,7 +300,7 @@ public class AppMain extends javax.swing.JFrame {
                 connectionLabel.setForeground(new Color(76, 175, 80));
             } catch (SQLException | ClassNotFoundException e) {
                 loginMessage.setText("Error connecting to database, please try again");
-                        
+                e.printStackTrace();        
             }
         }
         if(isLoggedIn) {
@@ -310,7 +310,6 @@ public class AppMain extends javax.swing.JFrame {
             loginButton.setVisible(false);
             loginDialog.setVisible(false);    
         }
-        loginMessage.setText("");
     }//GEN-LAST:event_loginUserActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
