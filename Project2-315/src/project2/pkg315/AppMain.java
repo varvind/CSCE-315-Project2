@@ -7,6 +7,8 @@ package project2.pkg315;
 
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,10 +18,20 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;  
+import javax.swing.WindowConstants;
 /**
  *
  * @author arvin
  */
+class WindowEventHandler extends WindowAdapter {
+  public void windowClosing(WindowEvent evt) {
+      try {
+          AppMain.closeConnection();
+      } catch (SQLException ex) {
+          Logger.getLogger(WindowEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+      }
+  }
+}
 public class AppMain extends javax.swing.JFrame {
     private boolean isFiltered = false;
     private static Connection conn;
@@ -33,6 +45,12 @@ public class AppMain extends javax.swing.JFrame {
     public AppMain() {
         initComponents();
         Search.setEnabled(false);
+    }
+    public static void closeConnection() throws SQLException{
+        if(conn != null){
+            conn.close();
+        }
+        
     }
 
     /**
@@ -532,7 +550,7 @@ public class AppMain extends javax.swing.JFrame {
         isFiltered = false;
         takeOutCheckBox.setSelected(false);
         twentyFourHoursCheckBox.setSelected(false);
-        deliveryCheckBox.setSelected(false);
+        goodForKidsCheckBox.setSelected(false);
         deliveryCheckBox.setSelected(false);
     }
     /**
@@ -565,7 +583,9 @@ public class AppMain extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AppMain().setVisible(true);
+                AppMain main = new AppMain();
+                main.setVisible(true);
+                main.addWindowListener(new WindowEventHandler());
             }
         });
     }
