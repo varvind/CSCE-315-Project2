@@ -21,6 +21,7 @@ import java.util.Date;
  * @author arvin
  */
 public class AppMain extends javax.swing.JFrame {
+    private boolean isFiltered = false;
     private static Connection conn;
     private final static String DB_STRING =
             "jdbc:postgresql://csce-315-db.engr.tamu.edu/db908_group18_project2";
@@ -56,6 +57,13 @@ public class AppMain extends javax.swing.JFrame {
         resultsText = new javax.swing.JTextArea();
         exportFile = new javax.swing.JButton();
         outputMessage = new javax.swing.JLabel();
+        filterDialog = new javax.swing.JDialog();
+        takeOutCheckBox = new javax.swing.JCheckBox();
+        twentyFourHoursCheckBox = new javax.swing.JCheckBox();
+        goodForKidsCheckBox = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
+        submitFilters = new javax.swing.JButton();
+        deliveryCheckBox = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         connectionLabel = new javax.swing.JLabel();
@@ -64,6 +72,7 @@ public class AppMain extends javax.swing.JFrame {
         Search = new javax.swing.JButton();
         loginButton = new javax.swing.JButton();
         queryErrorMessage = new javax.swing.JLabel();
+        filterButton = new javax.swing.JButton();
 
         loginDialog.setMinimumSize(new java.awt.Dimension(466, 300));
 
@@ -190,6 +199,68 @@ public class AppMain extends javax.swing.JFrame {
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
+        filterDialog.setMinimumSize(new java.awt.Dimension(429, 308));
+
+        takeOutCheckBox.setText("Take Out");
+
+        twentyFourHoursCheckBox.setText("Open 24 Hours");
+
+        goodForKidsCheckBox.setText("Good For Kids");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel3.setText("Filter Busineses");
+
+        submitFilters.setText("Submit");
+        submitFilters.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitFiltersActionPerformed(evt);
+            }
+        });
+
+        deliveryCheckBox.setText("Delivery");
+
+        javax.swing.GroupLayout filterDialogLayout = new javax.swing.GroupLayout(filterDialog.getContentPane());
+        filterDialog.getContentPane().setLayout(filterDialogLayout);
+        filterDialogLayout.setHorizontalGroup(
+            filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filterDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(filterDialogLayout.createSequentialGroup()
+                        .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(goodForKidsCheckBox)
+                            .addComponent(twentyFourHoursCheckBox)
+                            .addComponent(takeOutCheckBox)
+                            .addComponent(deliveryCheckBox))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
+                        .addGap(0, 132, Short.MAX_VALUE)
+                        .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(126, 126, 126))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
+                                .addComponent(submitFilters)
+                                .addGap(181, 181, 181))))))
+        );
+        filterDialogLayout.setVerticalGroup(
+            filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filterDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addGap(22, 22, 22)
+                .addComponent(takeOutCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(twentyFourHoursCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(goodForKidsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deliveryCheckBox)
+                .addGap(18, 18, 18)
+                .addComponent(submitFilters)
+                .addContainerGap(113, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -225,30 +296,41 @@ public class AppMain extends javax.swing.JFrame {
 
         queryErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        filterButton.setText("Filters");
+        filterButton.setEnabled(false);
+        filterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(369, 369, 369)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 283, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(369, 369, 369)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(459, 459, 459)
+                        .addComponent(Search)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 332, Short.MAX_VALUE)
                 .addComponent(loginButton)
                 .addGap(37, 37, 37))
             .addGroup(layout.createSequentialGroup()
+                .addGap(293, 293, 293)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(459, 459, 459)
-                        .addComponent(Search))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(293, 293, 293)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(filterButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -265,12 +347,14 @@ public class AppMain extends javax.swing.JFrame {
                 .addGap(53, 53, 53)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(177, 177, 177)
                 .addComponent(Search)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         pack();
@@ -308,7 +392,8 @@ public class AppMain extends javax.swing.JFrame {
             query.setText("");
             query.setEditable(true);
             loginButton.setVisible(false);
-            loginDialog.setVisible(false);    
+            loginDialog.setVisible(false);
+            filterButton.setEnabled(true);
         }
     }//GEN-LAST:event_loginUserActionPerformed
 
@@ -329,8 +414,34 @@ public class AppMain extends javax.swing.JFrame {
             }
             System.out.println(business_name);
             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlStatement = "SELECT * FROM business WHERE name = " + "\'" 
+            String sqlStatement = "SELECT * FROM business "; 
+            if(isFiltered) {
+                sqlStatement += "AS b INNER JOIN attr AS a ON b.attribute_id = "
+                        + "a.attributes_id WHERE ";
+                if(!business_name.equals("")) {
+                    sqlStatement += "WHERE b.name = " 
+                        + "\'" + business_name + "\' AND ";
+                }
+                
+                if(BusinessAttributes.delivery) {
+                    sqlStatement += "a.restaurantsdelivery = \'True\' AND ";
+                }
+                if(BusinessAttributes.goodForKids) {
+                    sqlStatement += "a.goodforkids = \'True\' AND ";
+                }
+                if(BusinessAttributes.openTwentyFourHours) {
+                    sqlStatement += "a.open24hours = \'True\' AND ";
+                }
+                if(BusinessAttributes.takeout) {
+                    sqlStatement += "a.restaurantstakeout = \'True\' AND ";
+                }
+                sqlStatement = sqlStatement.substring(0, sqlStatement.length() - 5);
+            } else {
+                sqlStatement += "WHERE name = " + "\'" 
                     + business_name + "\'";
+            }
+            System.out.println(sqlStatement);
+            
             //send statement to DBMS
             queryErrorMessage.setText("Searching....");
             ResultSet result = stmt.executeQuery(sqlStatement);
@@ -368,7 +479,7 @@ public class AppMain extends javax.swing.JFrame {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        queryErrorMessage.setText("");
+        resetQueryFields();
     }//GEN-LAST:event_SearchActionPerformed
 
     private void exportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileActionPerformed
@@ -389,6 +500,41 @@ public class AppMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_exportFileActionPerformed
 
+    private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
+        // TODO add your handling code here:
+        filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        filterDialog.setVisible(true);
+    }//GEN-LAST:event_filterButtonActionPerformed
+
+    private void submitFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitFiltersActionPerformed
+        // TODO add your handling code here:
+        if(takeOutCheckBox.isSelected() || twentyFourHoursCheckBox.isSelected()
+                || goodForKidsCheckBox.isSelected() || deliveryCheckBox.isSelected()) {
+            isFiltered = true;
+        }
+        if(takeOutCheckBox.isSelected()) {
+            BusinessAttributes.takeout = true;
+        }
+        if(twentyFourHoursCheckBox.isSelected()) {
+            BusinessAttributes.openTwentyFourHours = true;
+        }
+        if(goodForKidsCheckBox.isSelected()) {
+            BusinessAttributes.takeout = true;
+        }
+        if(deliveryCheckBox.isSelected()) {
+            BusinessAttributes.openTwentyFourHours = true;
+        }
+        filterDialog.setVisible(false);
+    }//GEN-LAST:event_submitFiltersActionPerformed
+    private void resetQueryFields() {
+        queryErrorMessage.setText("");
+        BusinessAttributes.resetFields();
+        isFiltered = false;
+        takeOutCheckBox.setSelected(false);
+        twentyFourHoursCheckBox.setSelected(false);
+        deliveryCheckBox.setSelected(false);
+        deliveryCheckBox.setSelected(false);
+    }
     /**
      * @param args the command line arguments
      */
@@ -427,9 +573,14 @@ public class AppMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Search;
     private javax.swing.JLabel connectionLabel;
+    private javax.swing.JCheckBox deliveryCheckBox;
     private javax.swing.JButton exportFile;
+    private javax.swing.JButton filterButton;
+    private javax.swing.JDialog filterDialog;
+    private javax.swing.JCheckBox goodForKidsCheckBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -444,6 +595,9 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JTextField query;
     private javax.swing.JLabel queryErrorMessage;
     private javax.swing.JTextArea resultsText;
+    private javax.swing.JButton submitFilters;
+    private javax.swing.JCheckBox takeOutCheckBox;
+    private javax.swing.JCheckBox twentyFourHoursCheckBox;
     private javax.swing.JPasswordField userPassword;
     private javax.swing.JTextField userUserName;
     // End of variables declaration//GEN-END:variables
