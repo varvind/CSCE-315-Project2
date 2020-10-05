@@ -378,82 +378,48 @@ public class AppMain extends javax.swing.JFrame {
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
-        // TODO add your handling code here:
+        Statement stmt2;
         try {
-            String business_name = query.getText(); 
-            if(business_name.contains("\'")) {
-                business_name = business_name.substring(0, business_name.indexOf("\'")) 
-                        + "\'\'" 
-                        + business_name.substring(business_name.indexOf("\'") + 1);
-            }
-            System.out.println(business_name);
-            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlStatement = "SELECT * FROM business "; 
-            if(isFiltered) {
-                sqlStatement += "AS b INNER JOIN attr AS a ON b.attribute_id = "
-                        + "a.attributes_id WHERE ";
-                if(!business_name.equals("")) {
-                    sqlStatement += "WHERE b.name = " 
-                        + "\'" + business_name + "\' AND ";
-                }
-                
-                if(BusinessAttributes.delivery) {
-                    sqlStatement += "a.restaurantsdelivery = \'True\' AND ";
-                }
-                if(BusinessAttributes.goodForKids) {
-                    sqlStatement += "a.goodforkids = \'True\' AND ";
-                }
-                if(BusinessAttributes.openTwentyFourHours) {
-                    sqlStatement += "a.open24hours = \'True\' AND ";
-                }
-                if(BusinessAttributes.takeout) {
-                    sqlStatement += "a.restaurantstakeout = \'True\' AND ";
-                }
-                sqlStatement = sqlStatement.substring(0, sqlStatement.length() - 5);
-            } else {
-                sqlStatement += "WHERE name = " + "\'" 
-                    + business_name + "\'";
-            }
-            System.out.println(sqlStatement);
+            stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+             //send statement to DBMS
+        String sqlStatement = "";
+        System.out.println(query.getText());
+        if(jComboBox1.getSelectedItem() == "Question 1" ){
             
-            //send statement to DBMS
-            queryErrorMessage.setText("Searching....");
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            int size = 0;
-            if(result != null) {
-                result.last();
-                size = result.getRow();
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 2"){
+            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") a INNER JOIN review AS r ON a.user_id = r.user_id"; 
+            
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 3"){
+            sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
+            sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 4"){
+            sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
+        }
+        System.out.println(sqlStatement);
+        
+        ResultSet result2 = stmt2.executeQuery(sqlStatement);
+        
+        queryErrorMessage.setText("Searching....");
+        
+         int size = 0;
+            if(result2 != null) {
+                result2.last();
+                size = result2.getRow();
             }
             if(size == 0) {
                 resultsText.setText("No Results Found");
                 exportFile.setEnabled(false);
             } else {
-                result.first();
-                String city = "";
-                String stars = "";      
-                int city_string_len = 0;
-                int stars_string_len = 0;
-                
-                String business_info = String.format("%-50s%-50s%-20s", "Business Name", "City", "Rating") + "\n\n";
-                while (result.next()) {
-                     city = result.getString("city");
-                     stars = result.getString("stars");
-                     String name = result.getString("name");
-                     city_string_len = city.length();
-                     stars_string_len = stars.length();
-                    //output    
-                     business_info += String.format("%-50s%-50s%-20s", name, city, stars)+ "\n";  
-                }
-                
-                resultsText.setText(business_info);
+               resultsText.setText("hi!");
             }
             outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
             outputDialog.setVisible(true);
-            exportFile.setEnabled(true);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        resetQueryFields();
     }//GEN-LAST:event_SearchActionPerformed
 
     private void exportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileActionPerformed
@@ -475,45 +441,7 @@ public class AppMain extends javax.swing.JFrame {
     }//GEN-LAST:event_exportFileActionPerformed
 
     private void questionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionButtonActionPerformed
-        Statement stmt2;
-        try {
-            stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-             //send statement to DBMS
-            String sqlStatement = "";
-            System.out.println(query.getText());
-            if(jComboBox1.getSelectedItem() == "Question 1" ){
-
-            } else if(jComboBox1.getSelectedItem() == "Question 2"){
-                sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") INNER JOIN review AS r ON a.user_id = r.user_id"; 
-
-            } else if(jComboBox1.getSelectedItem() == "Question 3"){
-                sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
-                sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
-            } else {
-                sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
-            }
-            System.out.println(sqlStatement);
-
-            ResultSet result2 = stmt2.executeQuery(sqlStatement);
-
-            queryErrorMessage.setText("Searching....");
         
-         int size = 0;
-            if(result2 != null) {
-                result2.last();
-                size = result2.getRow();
-            }
-            if(size == 0) {
-                resultsText.setText("No Results Found");
-                exportFile.setEnabled(false);
-            } else {
-               resultsText.setText("hi!");
-            }
-            outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-            outputDialog.setVisible(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_questionButtonActionPerformed
     
     private void queryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryActionPerformed
