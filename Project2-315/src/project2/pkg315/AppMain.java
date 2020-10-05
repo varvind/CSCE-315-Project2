@@ -83,8 +83,8 @@ public class AppMain extends javax.swing.JFrame {
         Search = new javax.swing.JButton();
         loginButton = new javax.swing.JButton();
         queryErrorMessage = new javax.swing.JLabel();
-        questionButton = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        selectQuestion = new javax.swing.JButton();
 
         loginDialog.setMinimumSize(new java.awt.Dimension(466, 300));
 
@@ -224,11 +224,6 @@ public class AppMain extends javax.swing.JFrame {
 
         query.setEditable(false);
         query.setText("Please Login Before Searching");
-        query.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                queryActionPerformed(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -251,18 +246,18 @@ public class AppMain extends javax.swing.JFrame {
 
         queryErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        questionButton.setText("Query Question");
-        questionButton.setToolTipText("");
-        questionButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                questionButtonActionPerformed(evt);
-            }
-        });
-
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Question 1", "Question 2", "Question 3", "Question 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        selectQuestion.setText("Select Question");
+        selectQuestion.setEnabled(false);
+        selectQuestion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectQuestionActionPerformed(evt);
             }
         });
 
@@ -271,62 +266,54 @@ public class AppMain extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(141, 141, 141)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(questionButton)
-                        .addGap(267, 267, 267)
+                        .addGap(76, 76, 76)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(85, 85, 85))
+                    .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(168, 168, 168)
                         .addComponent(Search))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(116, 116, 116)
+                        .addGap(150, 150, 150)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(298, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(360, 360, 360))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(connectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(250, 250, 250)
-                        .addComponent(loginButton)
-                        .addGap(37, 37, 37))))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(selectQuestion))))
+                .addGap(39, 39, 39)
+                .addComponent(loginButton)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(loginButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addGap(26, 26, 26)
-                        .addComponent(connectionLabel)
-                        .addGap(35, 35, 35)
-                        .addComponent(jLabel4)
-                        .addGap(27, 27, 27)
-                        .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
-                        .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Search))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(267, 267, 267)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(questionButton)))
-                .addContainerGap(56, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(loginButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(connectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(selectQuestion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Search)
+                .addGap(32, 32, 32))
         );
 
         pack();
@@ -365,7 +352,7 @@ public class AppMain extends javax.swing.JFrame {
             query.setEditable(true);
             loginButton.setVisible(false);
             loginDialog.setVisible(false);
-           // filterButton.setEnabled(true);
+            selectQuestion.setEnabled(true);
         }
     }//GEN-LAST:event_loginUserActionPerformed
 
@@ -472,36 +459,6 @@ public class AppMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_exportFileActionPerformed
 
-    private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
-        // TODO add your handling code here:
-        /*
-        filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        filterDialog.setVisible(true);
-        */
-    }//GEN-LAST:event_filterButtonActionPerformed
-
-    private void submitFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitFiltersActionPerformed
-     /*   // TODO add your handling code here:
-        if(takeOutCheckBox.isSelected() || twentyFourHoursCheckBox.isSelected()
-                || goodForKidsCheckBox.isSelected() || deliveryCheckBox.isSelected()) {
-            isFiltered = true;
-        }
-        if(takeOutCheckBox.isSelected()) {
-            BusinessAttributes.takeout = true;
-        }
-        if(twentyFourHoursCheckBox.isSelected()) {
-            BusinessAttributes.openTwentyFourHours = true;
-        }
-        if(goodForKidsCheckBox.isSelected()) {
-            BusinessAttributes.takeout = true;
-        }
-        if(deliveryCheckBox.isSelected()) {
-            BusinessAttributes.openTwentyFourHours = true;
-        }
-        filterDialog.setVisible(false);
-        */
-    }//GEN-LAST:event_submitFiltersActionPerformed
-
     private void questionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionButtonActionPerformed
         Statement stmt2;
         try {
@@ -542,16 +499,9 @@ public class AppMain extends javax.swing.JFrame {
             }
             outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
             outputDialog.setVisible(true);
-            
-
         } catch (SQLException ex) {
             Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-      
-       
-       
-        
     }//GEN-LAST:event_questionButtonActionPerformed
     
     private void queryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryActionPerformed
@@ -561,6 +511,10 @@ public class AppMain extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void selectQuestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectQuestionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectQuestionActionPerformed
     private void resetQueryFields() {
         queryErrorMessage.setText("");
         BusinessAttributes.resetFields();
@@ -629,8 +583,8 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JLabel outputMessage;
     private javax.swing.JTextField query;
     private javax.swing.JLabel queryErrorMessage;
-    private javax.swing.JButton questionButton;
     private javax.swing.JTextArea resultsText;
+    private javax.swing.JButton selectQuestion;
     private javax.swing.JPasswordField userPassword;
     private javax.swing.JTextField userUserName;
     // End of variables declaration//GEN-END:variables
