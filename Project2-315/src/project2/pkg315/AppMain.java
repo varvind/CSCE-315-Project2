@@ -44,6 +44,7 @@ public class AppMain extends javax.swing.JFrame {
      */
     public AppMain() {
         initComponents();
+        query2.setVisible(false);
         Search.setEnabled(false);
     }
     public static void closeConnection() throws SQLException{
@@ -75,6 +76,7 @@ public class AppMain extends javax.swing.JFrame {
         resultsText = new javax.swing.JTextArea();
         exportFile = new javax.swing.JButton();
         outputMessage = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         connectionLabel = new javax.swing.JLabel();
@@ -85,6 +87,7 @@ public class AppMain extends javax.swing.JFrame {
         queryErrorMessage = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         selectQuestion = new javax.swing.JButton();
+        query2 = new javax.swing.JTextField();
 
         loginDialog.setMinimumSize(new java.awt.Dimension(466, 300));
 
@@ -211,6 +214,8 @@ public class AppMain extends javax.swing.JFrame {
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
+        jTextField1.setText("jTextField1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -227,7 +232,7 @@ public class AppMain extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Search for Businesses:");
+        jLabel4.setText("Search:");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
 
         Search.setText("Search");
@@ -246,7 +251,7 @@ public class AppMain extends javax.swing.JFrame {
 
         queryErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Question 1", "Question 2", "Question 3", "Question 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Find Shortest Chain Between Two Restuarants", "Get Review Statistics For a User", "Find the Most Spread of Franchises in a State", "Find the Best Local Restuarant in a City" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -261,6 +266,8 @@ public class AppMain extends javax.swing.JFrame {
             }
         });
 
+        query2.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -268,27 +275,33 @@ public class AppMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(141, 141, 141)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(85, 85, 85))
                     .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(76, 76, 76)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(168, 168, 168)
                         .addComponent(Search))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(selectQuestion))))
+                    .addComponent(query2, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addComponent(loginButton)
                 .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(170, 170, 170))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(202, 202, 202))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(selectQuestion)
+                        .addGap(269, 269, 269))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -303,15 +316,17 @@ public class AppMain extends javax.swing.JFrame {
                 .addComponent(connectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(selectQuestion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(query2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(Search)
                 .addGap(32, 32, 32))
         );
@@ -464,27 +479,24 @@ public class AppMain extends javax.swing.JFrame {
         try {
             stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
              //send statement to DBMS
-        String sqlStatement = "";
-        System.out.println(query.getText());
-        if(jComboBox1.getSelectedItem() == "Question 1" ){
-            
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 2"){
-            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") INNER JOIN review AS r ON a.user_id = r.user_id"; 
-            
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 3"){
-            sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
-            sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 4"){
-            sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
-        }
-        System.out.println(sqlStatement);
-        
-        ResultSet result2 = stmt2.executeQuery(sqlStatement);
-        
-        queryErrorMessage.setText("Searching....");
+            String sqlStatement = "";
+            System.out.println(query.getText());
+            if(jComboBox1.getSelectedItem() == "Question 1" ){
+
+            } else if(jComboBox1.getSelectedItem() == "Question 2"){
+                sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") INNER JOIN review AS r ON a.user_id = r.user_id"; 
+
+            } else if(jComboBox1.getSelectedItem() == "Question 3"){
+                sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
+                sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
+            } else {
+                sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
+            }
+            System.out.println(sqlStatement);
+
+            ResultSet result2 = stmt2.executeQuery(sqlStatement);
+
+            queryErrorMessage.setText("Searching....");
         
          int size = 0;
             if(result2 != null) {
@@ -510,10 +522,28 @@ public class AppMain extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void selectQuestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectQuestionActionPerformed
         // TODO add your handling code here:
+        if(jComboBox1.getSelectedItem() == "Find Shortest Chain Between Two Restuarants" ){
+            query2.setVisible(true);
+            query2.setEnabled(true);
+            queryErrorMessage.setText("Enter 2 Businesses In Both of the Fields Below");
+        } else if(jComboBox1.getSelectedItem() == "Get Review Statistics For a User"){
+            query2.setVisible(false);
+            query2.setEnabled(false);
+            queryErrorMessage.setText("Enter a Business");
+        } else if(jComboBox1.getSelectedItem() == "Find the Most Spread of Franchises in a State"){
+            query2.setVisible(false);
+            query2.setEnabled(false);
+            queryErrorMessage.setText("Enter a US State");
+        } else {
+            query2.setVisible(false);
+            query2.setEnabled(false);
+            queryErrorMessage.setText("Enter a US City");
+        }
     }//GEN-LAST:event_selectQuestionActionPerformed
     private void resetQueryFields() {
         queryErrorMessage.setText("");
@@ -575,6 +605,7 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loginButton;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JLabel loginMessage;
@@ -582,6 +613,7 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JDialog outputDialog;
     private javax.swing.JLabel outputMessage;
     private javax.swing.JTextField query;
+    private javax.swing.JTextField query2;
     private javax.swing.JLabel queryErrorMessage;
     private javax.swing.JTextArea resultsText;
     private javax.swing.JButton selectQuestion;
