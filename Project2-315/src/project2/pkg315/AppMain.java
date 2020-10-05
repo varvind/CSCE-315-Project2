@@ -470,7 +470,7 @@ public class AppMain extends javax.swing.JFrame {
             
         }
         else if(jComboBox1.getSelectedItem() == "Question 2"){
-            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") INNER JOIN review AS r ON a.user_id = r.user_id"; 
+            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") a INNER JOIN review AS r ON a.user_id = r.user_id"; 
             
         }
         else if(jComboBox1.getSelectedItem() == "Question 3"){
