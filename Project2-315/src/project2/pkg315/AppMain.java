@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.DriverManager;
@@ -20,12 +19,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;  
-import javax.swing.WindowConstants;
 /**
  *
  * @author arvin
  */
 class WindowEventHandler extends WindowAdapter {
+  @Override
   public void windowClosing(WindowEvent evt) {
       try {
           AppMain.closeConnection();
@@ -39,7 +38,6 @@ public class AppMain extends javax.swing.JFrame {
     private final static String Q_2 = "Get Review Statistics For a User";
     private final static String Q_3 = "Find the Most Spread of Franchises in a State";
     private final static String Q_4 = "Find the Best Local Restuarant in a City";
-    private boolean isFiltered = false;
     private static Connection conn;
     private final static String DB_STRING =
             "jdbc:postgresql://csce-315-db.engr.tamu.edu/db908_group18_project2";
@@ -52,11 +50,11 @@ public class AppMain extends javax.swing.JFrame {
         initComponents();
         Search.setEnabled(false);
     }
+    
     public static void closeConnection() throws SQLException{
         if(conn != null){
             conn.close();
-        }
-        
+        }      
     }
 
     /**
@@ -82,6 +80,8 @@ public class AppMain extends javax.swing.JFrame {
         exportFile = new javax.swing.JButton();
         outputMessage = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         connectionLabel = new javax.swing.JLabel();
@@ -90,7 +90,7 @@ public class AppMain extends javax.swing.JFrame {
         Search = new javax.swing.JButton();
         loginButton = new javax.swing.JButton();
         queryErrorMessage = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        questionBox = new javax.swing.JComboBox<>();
         selectQuestion = new javax.swing.JButton();
         query2 = new javax.swing.JTextField();
 
@@ -221,6 +221,10 @@ public class AppMain extends javax.swing.JFrame {
 
         jTextField1.setText("jTextField1");
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -256,10 +260,10 @@ public class AppMain extends javax.swing.JFrame {
 
         queryErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Find Shortest Chain Between Two Restuarants", "Get Review Statistics For a User", "Find the Most Spread of Franchises in a State", "Find the Best Local Restuarant in a City" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        questionBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Find Shortest Chain Between Two Restuarants", "Get Review Statistics For a User", "Find the Most Spread of Franchises in a State", "Find the Best Local Restuarant in a City" }));
+        questionBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                questionBoxActionPerformed(evt);
             }
         });
 
@@ -299,7 +303,7 @@ public class AppMain extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(questionBox, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(170, 170, 170))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -320,7 +324,7 @@ public class AppMain extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(connectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(questionBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(selectQuestion)
                 .addGap(18, 18, 18)
@@ -363,7 +367,6 @@ public class AppMain extends javax.swing.JFrame {
                 connectionLabel.setForeground(new Color(76, 175, 80));
             } catch (SQLException | ClassNotFoundException e) {
                 loginMessage.setText("Error connecting to database, please try again");
-                e.printStackTrace();        
             }
         }
         if(isLoggedIn) {
@@ -385,101 +388,23 @@ public class AppMain extends javax.swing.JFrame {
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
-        Statement stmt2;
+        Statement stmt;
         try {
             List<String> args = new ArrayList<>();
-            stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
              //send statement to DBMS
             String sqlStatement = "";
             System.out.println(query.getText());
             if(query.getText().equals("")) {
                queryErrorMessage.setText("Invalid Input : Please enter a User");
             } else {
-                 if(jComboBox1.getSelectedItem().equals(Q_1) ){
-                     
-                } else if(jComboBox1.getSelectedItem().equals(Q_2)){
-                    args.add("name");
-                    args.add("avg_stars");
-                    args.add("stars");
-                    args.add("funny");
-                    args.add("cool");
-                    args.add("useful");
-                    args.add("text");
-                    sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, "
-                            + "r.funny, r.cool, r.useful FROM "
-                            + "(SELECT user_id, NAME, average_stars "
-                            + "AS avg_stars FROM users WHERE  user_id = " + 
-                            "\'" + query.getText() + "\'" + ") a "
-                            + "INNER JOIN review AS r ON a.user_id = r.user_id"; 
+                sqlStatement = createQuery(args);
 
-                } else if(jComboBox1.getSelectedItem().equals(Q_3)){
-                    args.add("name");
-                    args.add("countinstate");
-                    args.add("avgstars");
-                    sqlStatement += "SELECT franCntInState.name, "
-                            + "franCntInState.countinstate, "
-                            + "rate.avgstars FROM "
-                            + "(SELECT Count(franInState.name) AS countInState,";
-                    sqlStatement += "franInState.name FROM (SELECT b.name, "
-                            + "b.business_id FROM   (SELECT name, Count(name) "
-                            + "FROM   business GROUP  BY name "
-                            + "HAVING Count(name) > 1) fran "
-                            + "INNER JOIN business AS b ON b.name = "
-                            + "fran.name WHERE  b.state = \'" + query.getText() 
-                            + "\' ORDER  BY name) franInState GROUP  BY "
-                            + "franInState.name  ORDER  BY countinstate DESC) "
-                            + "franCntInState INNER JOIN (SELECT name, "
-                            + "Avg(stars) AS avgStars FROM business GROUP  "
-                            + "BY name) rate ON rate.name = franCntInState.name "
-                            + "WHERE  avgstars >= 3.5 ORDER  BY countinstate "
-                            + "DESC LIMIT 5 ";    
-                } else {
-                    args.add("name");
-                    args.add("text");
-                    
-                    sqlStatement += "SELECT mostTip.name, mostTip.count, "
-                            + "tip.text FROM (SELECT nonFran.name, "
-                            + "nonFran.business_id, Count(name) "
-                            + "FROM (SELECT a.name, b.city, b.business_id "
-                            + "FROM (SELECT name, Count(name) FROM business "
-                            + "GROUP BY name HAVING Count(name) = 1) a INNER "
-                            + "JOIN business AS b ON b.name = a.name WHERE "
-                            + "city = " + "\'" + query.getText() + "\'" + ") "
-                            + "nonFran INNER JOIN tip AS t ON "
-                            + "nonFran.business_id = t.business_id GROUP "
-                            + "BY name, nonFran.business_id ORDER BY count "
-                            + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
-                            + "mostTip.business_id = tip.business_id";
-                }
-                System.out.println(sqlStatement);
-
-                ResultSet result = stmt2.executeQuery(sqlStatement);
+                ResultSet result = stmt.executeQuery(sqlStatement);
 
                 queryErrorMessage.setText("Searching....");
-
-                int size = 0;
-                String output = "";
-                for(int i = 0; i < args.size(); i++) {
-                    output += String.format("%-50s", args.get(i));
-                    
-                }
-                output += "\n\n";
-                if(result != null) {
-                    result.last();
-                    size = result.getRow();
-                }
-                result.first();
-                if(result != null) {
-                    while(result.next()) {
-                       for(int i = 0; i < args.size(); i++) {
-                           String arg;
-                           output += String.format("%-50s", result.getString(args.get(i)));
-                       }
-                       output += "\n\n";
-                    }
-                }
-                System.out.println(size);
-                if(size == 0) {
+                String output = getFormattedQueryOutput(result, args);
+                if(output.equals("")) {
                     resultsText.setText("No Results Found");
                     exportFile.setEnabled(false);
                 } else {
@@ -493,7 +418,101 @@ public class AppMain extends javax.swing.JFrame {
             Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_SearchActionPerformed
+    
+    private String createQuery(List<String> args) {
+        String sqlStatement = "";
+        if(questionBox.getSelectedItem().equals(Q_1) ){
+                     
+        } else if(questionBox.getSelectedItem().equals(Q_2)){
+            args.add("name");
+            args.add("avg_stars");
+            args.add("stars");
+            args.add("funny");
+            args.add("cool");
+            args.add("useful");
+            args.add("text");
+            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, "
+                    + "r.funny, r.cool, r.useful FROM "
+                    + "(SELECT user_id, NAME, average_stars "
+                    + "AS avg_stars FROM users WHERE  user_id = " + 
+                    "\'" + query.getText() + "\'" + ") a "
+                    + "INNER JOIN review AS r ON a.user_id = r.user_id"; 
 
+        } else if(questionBox.getSelectedItem().equals(Q_3)){
+            args.add("name");
+            args.add("countinstate");
+            args.add("avgstars");
+            sqlStatement += "SELECT franCntInState.name, "
+                    + "franCntInState.countinstate, "
+                    + "rate.avgstars FROM "
+                    + "(SELECT Count(franInState.name) AS countInState,";
+            sqlStatement += "franInState.name FROM (SELECT b.name, "
+                    + "b.business_id FROM   (SELECT name, Count(name) "
+                    + "FROM   business GROUP  BY name "
+                    + "HAVING Count(name) > 1) fran "
+                    + "INNER JOIN business AS b ON b.name = "
+                    + "fran.name WHERE  b.state = \'" + query.getText() 
+                    + "\' ORDER  BY name) franInState GROUP  BY "
+                    + "franInState.name  ORDER  BY countinstate DESC) "
+                    + "franCntInState INNER JOIN (SELECT name, "
+                    + "Avg(stars) AS avgStars FROM business GROUP  "
+                    + "BY name) rate ON rate.name = franCntInState.name "
+                    + "WHERE  avgstars >= 3.5 ORDER  BY countinstate "
+                    + "DESC LIMIT 5 ";    
+        } else {
+            args.add("name");
+            args.add("text");
+
+            sqlStatement += "SELECT mostTip.name, mostTip.count, "
+                    + "tip.text FROM (SELECT nonFran.name, "
+                    + "nonFran.business_id, Count(name) "
+                    + "FROM (SELECT a.name, b.city, b.business_id "
+                    + "FROM (SELECT name, Count(name) FROM business "
+                    + "GROUP BY name HAVING Count(name) = 1) a INNER "
+                    + "JOIN business AS b ON b.name = a.name WHERE "
+                    + "city = " + "\'" + query.getText() + "\'" + ") "
+                    + "nonFran INNER JOIN tip AS t ON "
+                    + "nonFran.business_id = t.business_id GROUP "
+                    + "BY name, nonFran.business_id ORDER BY count "
+                    + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
+                    + "mostTip.business_id = tip.business_id";
+        }
+        return sqlStatement;
+    }
+    
+    private String getFormattedQueryOutput(ResultSet result, List<String> args) {
+        String output = "";
+        int size = 0;
+        for(int i = 0; i < args.size(); i++) {
+            output += String.format("%-50s", args.get(i));
+        }
+        try {
+            output += "\n\n";
+            if(result != null) {
+                result.last();
+                size = result.getRow();
+            }
+            if(size == 0) {
+                return "";
+            }
+            result.first();
+            if(result != null) {
+                while(result.next()) {
+                   for(int i = 0; i < args.size(); i++) {
+                       String arg;
+                       output += String.format("%-50s", result.getString(args.get(i)));
+                   }
+                   output += "\n\n";
+                }
+            }
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            queryErrorMessage.setText("Error in Query, Please try again");
+        }
+        
+        return output;
+    }
+    
     private void exportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileActionPerformed
         // TODO add your handling code here:
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy.HH.mm.ss");  
@@ -520,22 +539,22 @@ public class AppMain extends javax.swing.JFrame {
         
     }//GEN-LAST:event_queryActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void questionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionBoxActionPerformed
         // TODO add your handling code here:
         
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_questionBoxActionPerformed
 
     private void selectQuestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectQuestionActionPerformed
         // TODO add your handling code here:
-        if(jComboBox1.getSelectedItem().equals(Q_1)){
+        if(questionBox.getSelectedItem().equals(Q_1)){
             query2.setVisible(true);
             query2.setEnabled(true);
             queryErrorMessage.setText("Enter 2 Businesses In Both of the Fields Below");
-        } else if(jComboBox1.getSelectedItem().equals(Q_2)){
+        } else if(questionBox.getSelectedItem().equals(Q_2)){
             query2.setVisible(false);
             query2.setEnabled(false);
             queryErrorMessage.setText("Enter a User ID");
-        } else if(jComboBox1.getSelectedItem().equals(Q_3)){
+        } else if(questionBox.getSelectedItem().equals(Q_3)){
             query2.setVisible(false);
             query2.setEnabled(false);
             queryErrorMessage.setText("Enter a US State (Two letter Abreviation , i.e. TX for Texas)");
@@ -545,11 +564,7 @@ public class AppMain extends javax.swing.JFrame {
             queryErrorMessage.setText("Enter a US City");
         }
     }//GEN-LAST:event_selectQuestionActionPerformed
-    private void resetQueryFields() {
-        queryErrorMessage.setText("");
-        BusinessAttributes.resetFields();
-        isFiltered = false;
-    }
+
     /**
      * @param args the command line arguments
      */
@@ -591,7 +606,6 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JButton Search;
     private javax.swing.JLabel connectionLabel;
     private javax.swing.JButton exportFile;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -599,6 +613,8 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loginButton;
     private javax.swing.JDialog loginDialog;
@@ -609,6 +625,7 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JTextField query;
     private javax.swing.JTextField query2;
     private javax.swing.JLabel queryErrorMessage;
+    private javax.swing.JComboBox<String> questionBox;
     private javax.swing.JTextArea resultsText;
     private javax.swing.JButton selectQuestion;
     private javax.swing.JPasswordField userPassword;
