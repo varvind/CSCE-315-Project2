@@ -75,13 +75,6 @@ public class AppMain extends javax.swing.JFrame {
         resultsText = new javax.swing.JTextArea();
         exportFile = new javax.swing.JButton();
         outputMessage = new javax.swing.JLabel();
-        filterDialog = new javax.swing.JDialog();
-        takeOutCheckBox = new javax.swing.JCheckBox();
-        twentyFourHoursCheckBox = new javax.swing.JCheckBox();
-        goodForKidsCheckBox = new javax.swing.JCheckBox();
-        jLabel3 = new javax.swing.JLabel();
-        submitFilters = new javax.swing.JButton();
-        deliveryCheckBox = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         connectionLabel = new javax.swing.JLabel();
@@ -90,7 +83,8 @@ public class AppMain extends javax.swing.JFrame {
         Search = new javax.swing.JButton();
         loginButton = new javax.swing.JButton();
         queryErrorMessage = new javax.swing.JLabel();
-        filterButton = new javax.swing.JButton();
+        questionButton = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         loginDialog.setMinimumSize(new java.awt.Dimension(466, 300));
 
@@ -217,68 +211,6 @@ public class AppMain extends javax.swing.JFrame {
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
-        filterDialog.setMinimumSize(new java.awt.Dimension(429, 308));
-
-        takeOutCheckBox.setText("Take Out");
-
-        twentyFourHoursCheckBox.setText("Open 24 Hours");
-
-        goodForKidsCheckBox.setText("Good For Kids");
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel3.setText("Filter Busineses");
-
-        submitFilters.setText("Submit");
-        submitFilters.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                submitFiltersActionPerformed(evt);
-            }
-        });
-
-        deliveryCheckBox.setText("Delivery");
-
-        javax.swing.GroupLayout filterDialogLayout = new javax.swing.GroupLayout(filterDialog.getContentPane());
-        filterDialog.getContentPane().setLayout(filterDialogLayout);
-        filterDialogLayout.setHorizontalGroup(
-            filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filterDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(filterDialogLayout.createSequentialGroup()
-                        .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(goodForKidsCheckBox)
-                            .addComponent(twentyFourHoursCheckBox)
-                            .addComponent(takeOutCheckBox)
-                            .addComponent(deliveryCheckBox))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
-                        .addGap(0, 132, Short.MAX_VALUE)
-                        .addGroup(filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(126, 126, 126))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterDialogLayout.createSequentialGroup()
-                                .addComponent(submitFilters)
-                                .addGap(181, 181, 181))))))
-        );
-        filterDialogLayout.setVerticalGroup(
-            filterDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filterDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(22, 22, 22)
-                .addComponent(takeOutCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(twentyFourHoursCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(goodForKidsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deliveryCheckBox)
-                .addGap(18, 18, 18)
-                .addComponent(submitFilters)
-                .addContainerGap(113, Short.MAX_VALUE))
-        );
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -292,6 +224,11 @@ public class AppMain extends javax.swing.JFrame {
 
         query.setEditable(false);
         query.setText("Please Login Before Searching");
+        query.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                queryActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -314,11 +251,18 @@ public class AppMain extends javax.swing.JFrame {
 
         queryErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        filterButton.setText("Filters");
-        filterButton.setEnabled(false);
-        filterButton.addActionListener(new java.awt.event.ActionListener() {
+        questionButton.setText("Query Question");
+        questionButton.setToolTipText("");
+        questionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterButtonActionPerformed(evt);
+                questionButtonActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Question 1", "Question 2", "Question 3", "Question 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -329,50 +273,60 @@ public class AppMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(369, 369, 369)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(connectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(71, 71, 71)
+                        .addComponent(questionButton)
+                        .addGap(267, 267, 267)
+                        .addComponent(Search))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(459, 459, 459)
-                        .addComponent(Search)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 332, Short.MAX_VALUE)
-                .addComponent(loginButton)
-                .addGap(37, 37, 37))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(293, 293, 293)
+                        .addGap(89, 89, 89)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(116, 116, 116)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(298, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(filterButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(360, 360, 360))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(connectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(250, 250, 250)
+                        .addComponent(loginButton)
+                        .addGap(37, 37, 37))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(loginButton))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(connectionLabel)
-                .addGap(53, 53, 53)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filterButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(177, 177, 177)
-                .addComponent(Search)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(loginButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addGap(26, 26, 26)
+                        .addComponent(connectionLabel)
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel4)
+                        .addGap(27, 27, 27)
+                        .addComponent(query, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addComponent(queryErrorMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Search))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(267, 267, 267)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(questionButton)))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -411,7 +365,7 @@ public class AppMain extends javax.swing.JFrame {
             query.setEditable(true);
             loginButton.setVisible(false);
             loginDialog.setVisible(false);
-            filterButton.setEnabled(true);
+           // filterButton.setEnabled(true);
         }
     }//GEN-LAST:event_loginUserActionPerformed
 
@@ -520,12 +474,14 @@ public class AppMain extends javax.swing.JFrame {
 
     private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
         // TODO add your handling code here:
+        /*
         filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         filterDialog.setVisible(true);
+        */
     }//GEN-LAST:event_filterButtonActionPerformed
 
     private void submitFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitFiltersActionPerformed
-        // TODO add your handling code here:
+     /*   // TODO add your handling code here:
         if(takeOutCheckBox.isSelected() || twentyFourHoursCheckBox.isSelected()
                 || goodForKidsCheckBox.isSelected() || deliveryCheckBox.isSelected()) {
             isFiltered = true;
@@ -543,15 +499,78 @@ public class AppMain extends javax.swing.JFrame {
             BusinessAttributes.openTwentyFourHours = true;
         }
         filterDialog.setVisible(false);
+        */
     }//GEN-LAST:event_submitFiltersActionPerformed
+
+    private void questionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionButtonActionPerformed
+        Statement stmt2;
+        try {
+            stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+             //send statement to DBMS
+        String sqlStatement = "";
+        System.out.println(query.getText());
+        if(jComboBox1.getSelectedItem() == "Question 1" ){
+            
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 2"){
+            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") INNER JOIN review AS r ON a.user_id = r.user_id"; 
+            
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 3"){
+            sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
+            sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
+        }
+        else if(jComboBox1.getSelectedItem() == "Question 4"){
+            sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
+        }
+        System.out.println(sqlStatement);
+        
+        ResultSet result2 = stmt2.executeQuery(sqlStatement);
+        
+        queryErrorMessage.setText("Searching....");
+        
+         int size = 0;
+            if(result2 != null) {
+                result2.last();
+                size = result2.getRow();
+            }
+            if(size == 0) {
+                resultsText.setText("No Results Found");
+                exportFile.setEnabled(false);
+            } else {
+               resultsText.setText("hi!");
+            }
+            outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+            outputDialog.setVisible(true);
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+      
+       
+       
+        
+    }//GEN-LAST:event_questionButtonActionPerformed
+    
+    private void queryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryActionPerformed
+        
+    }//GEN-LAST:event_queryActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
     private void resetQueryFields() {
         queryErrorMessage.setText("");
         BusinessAttributes.resetFields();
         isFiltered = false;
+        /*
         takeOutCheckBox.setSelected(false);
         twentyFourHoursCheckBox.setSelected(false);
         goodForKidsCheckBox.setSelected(false);
         deliveryCheckBox.setSelected(false);
+        */
     }
     /**
      * @param args the command line arguments
@@ -593,14 +612,10 @@ public class AppMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Search;
     private javax.swing.JLabel connectionLabel;
-    private javax.swing.JCheckBox deliveryCheckBox;
     private javax.swing.JButton exportFile;
-    private javax.swing.JButton filterButton;
-    private javax.swing.JDialog filterDialog;
-    private javax.swing.JCheckBox goodForKidsCheckBox;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -614,10 +629,8 @@ public class AppMain extends javax.swing.JFrame {
     private javax.swing.JLabel outputMessage;
     private javax.swing.JTextField query;
     private javax.swing.JLabel queryErrorMessage;
+    private javax.swing.JButton questionButton;
     private javax.swing.JTextArea resultsText;
-    private javax.swing.JButton submitFilters;
-    private javax.swing.JCheckBox takeOutCheckBox;
-    private javax.swing.JCheckBox twentyFourHoursCheckBox;
     private javax.swing.JPasswordField userPassword;
     private javax.swing.JTextField userUserName;
     // End of variables declaration//GEN-END:variables
