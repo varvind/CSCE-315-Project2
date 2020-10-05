@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;  
@@ -33,6 +35,10 @@ class WindowEventHandler extends WindowAdapter {
   }
 }
 public class AppMain extends javax.swing.JFrame {
+    private final static String Q_1 = "Find Shortest Chain Between Two Restuarants";
+    private final static String Q_2 = "Get Review Statistics For a User";
+    private final static String Q_3 = "Find the Most Spread of Franchises in a State";
+    private final static String Q_4 = "Find the Best Local Restuarant in a City";
     private boolean isFiltered = false;
     private static Connection conn;
     private final static String DB_STRING =
@@ -44,7 +50,6 @@ public class AppMain extends javax.swing.JFrame {
      */
     public AppMain() {
         initComponents();
-        query2.setVisible(false);
         Search.setEnabled(false);
     }
     public static void closeConnection() throws SQLException{
@@ -365,9 +370,11 @@ public class AppMain extends javax.swing.JFrame {
             Search.setEnabled(true);
             query.setText("");
             query.setEditable(true);
+            query2.setEnabled(true);
             loginButton.setVisible(false);
             loginDialog.setVisible(false);
             selectQuestion.setEnabled(true);
+            queryErrorMessage.setText("Enter 2 Businesses In Both of the Fields Below");
         }
     }//GEN-LAST:event_loginUserActionPerformed
 
@@ -380,43 +387,108 @@ public class AppMain extends javax.swing.JFrame {
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         Statement stmt2;
         try {
+            List<String> args = new ArrayList<>();
             stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
              //send statement to DBMS
-        String sqlStatement = "";
-        System.out.println(query.getText());
-        if(jComboBox1.getSelectedItem() == "Question 1" ){
-            
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 2"){
-            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, r.funny, r.cool, r.useful FROM (SELECT user_id, NAME, average_stars AS avg_stars FROM users WHERE  user_id = " + "\'" + query.getText() + "\'" + ") a INNER JOIN review AS r ON a.user_id = r.user_id"; 
-            
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 3"){
-            sqlStatement += "SELECT franCntInState.name, franCntInState.countinstate, rate.avgstars FROM (SELECT Count(franInState.name) AS countInState,";
-            sqlStatement += "franInState.name FROM (SELECT b.name, b.business_id FROM   (SELECT name, Count(name) FROM   business GROUP  BY name HAVING Count(name) > 1) fran INNER JOIN business AS b ON b.name = fran.name WHERE  b.state = \'" + query.getText() + "\' ORDER  BY name) franInState GROUP  BY franInState.name  ORDER  BY countinstate DESC) franCntInState INNER JOIN (SELECT name, Avg(stars) AS avgStars FROM business GROUP  BY name) rate ON rate.name = franCntInState.name WHERE  avgstars >= 3.5 ORDER  BY countinstate DESC LIMIT 5 ";    
-        }
-        else if(jComboBox1.getSelectedItem() == "Question 4"){
-            sqlStatement += "SELECT mostTip.name, mostTip.count, tip.text FROM (SELECT nonFran.name, nonFran.business_id, Count(name) FROM (SELECT a.name, b.city, b.business_id FROM (SELECT name, Count(name) FROM business GROUP BY name HAVING Count(name) = 1) a INNER JOIN business AS b ON b.name = a.name WHERE city = " + "\'" + query.getText() + "\'" + ") nonFran INNER JOIN tip AS t ON nonFran.business_id = t.business_id GROUP BY name, nonFran.business_id ORDER BY count DESC LIMIT 1) mostTip INNER JOIN tip ON mostTip.business_id = tip.business_id";
-        }
-        System.out.println(sqlStatement);
-        
-        ResultSet result2 = stmt2.executeQuery(sqlStatement);
-        
-        queryErrorMessage.setText("Searching....");
-        
-         int size = 0;
-            if(result2 != null) {
-                result2.last();
-                size = result2.getRow();
-            }
-            if(size == 0) {
-                resultsText.setText("No Results Found");
-                exportFile.setEnabled(false);
+            String sqlStatement = "";
+            System.out.println(query.getText());
+            if(query.getText().equals("")) {
+               queryErrorMessage.setText("Invalid Input : Please enter a User");
             } else {
-               resultsText.setText("hi!");
+                 if(jComboBox1.getSelectedItem().equals(Q_1) ){
+                     
+                } else if(jComboBox1.getSelectedItem().equals(Q_2)){
+                    args.add("name");
+                    args.add("avg_stars");
+                    args.add("stars");
+                    args.add("funny");
+                    args.add("cool");
+                    args.add("useful");
+                    args.add("text");
+                    sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, "
+                            + "r.funny, r.cool, r.useful FROM "
+                            + "(SELECT user_id, NAME, average_stars "
+                            + "AS avg_stars FROM users WHERE  user_id = " + 
+                            "\'" + query.getText() + "\'" + ") a "
+                            + "INNER JOIN review AS r ON a.user_id = r.user_id"; 
+
+                } else if(jComboBox1.getSelectedItem().equals(Q_3)){
+                    args.add("name");
+                    args.add("countinstate");
+                    args.add("avgstars");
+                    sqlStatement += "SELECT franCntInState.name, "
+                            + "franCntInState.countinstate, "
+                            + "rate.avgstars FROM "
+                            + "(SELECT Count(franInState.name) AS countInState,";
+                    sqlStatement += "franInState.name FROM (SELECT b.name, "
+                            + "b.business_id FROM   (SELECT name, Count(name) "
+                            + "FROM   business GROUP  BY name "
+                            + "HAVING Count(name) > 1) fran "
+                            + "INNER JOIN business AS b ON b.name = "
+                            + "fran.name WHERE  b.state = \'" + query.getText() 
+                            + "\' ORDER  BY name) franInState GROUP  BY "
+                            + "franInState.name  ORDER  BY countinstate DESC) "
+                            + "franCntInState INNER JOIN (SELECT name, "
+                            + "Avg(stars) AS avgStars FROM business GROUP  "
+                            + "BY name) rate ON rate.name = franCntInState.name "
+                            + "WHERE  avgstars >= 3.5 ORDER  BY countinstate "
+                            + "DESC LIMIT 5 ";    
+                } else {
+                    args.add("name");
+                    args.add("text");
+                    
+                    sqlStatement += "SELECT mostTip.name, mostTip.count, "
+                            + "tip.text FROM (SELECT nonFran.name, "
+                            + "nonFran.business_id, Count(name) "
+                            + "FROM (SELECT a.name, b.city, b.business_id "
+                            + "FROM (SELECT name, Count(name) FROM business "
+                            + "GROUP BY name HAVING Count(name) = 1) a INNER "
+                            + "JOIN business AS b ON b.name = a.name WHERE "
+                            + "city = " + "\'" + query.getText() + "\'" + ") "
+                            + "nonFran INNER JOIN tip AS t ON "
+                            + "nonFran.business_id = t.business_id GROUP "
+                            + "BY name, nonFran.business_id ORDER BY count "
+                            + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
+                            + "mostTip.business_id = tip.business_id";
+                }
+                System.out.println(sqlStatement);
+
+                ResultSet result = stmt2.executeQuery(sqlStatement);
+
+                queryErrorMessage.setText("Searching....");
+
+                int size = 0;
+                String output = "";
+                for(int i = 0; i < args.size(); i++) {
+                    output += String.format("%-50s", args.get(i));
+                    
+                }
+                output += "\n\n";
+                if(result != null) {
+                    result.last();
+                    size = result.getRow();
+                }
+                result.first();
+                if(result != null) {
+                    while(result.next()) {
+                       for(int i = 0; i < args.size(); i++) {
+                           String arg;
+                           output += String.format("%-50s", result.getString(args.get(i)));
+                       }
+                       output += "\n\n";
+                    }
+                }
+                System.out.println(size);
+                if(size == 0) {
+                    resultsText.setText("No Results Found");
+                    exportFile.setEnabled(false);
+                } else {
+                   resultsText.setText(output);
+                }
+                outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+                outputDialog.setVisible(true);
             }
-            outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-            outputDialog.setVisible(true);
+           
         } catch (SQLException ex) {
             Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -455,18 +527,18 @@ public class AppMain extends javax.swing.JFrame {
 
     private void selectQuestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectQuestionActionPerformed
         // TODO add your handling code here:
-        if(jComboBox1.getSelectedItem() == "Find Shortest Chain Between Two Restuarants" ){
+        if(jComboBox1.getSelectedItem().equals(Q_1)){
             query2.setVisible(true);
             query2.setEnabled(true);
             queryErrorMessage.setText("Enter 2 Businesses In Both of the Fields Below");
-        } else if(jComboBox1.getSelectedItem() == "Get Review Statistics For a User"){
+        } else if(jComboBox1.getSelectedItem().equals(Q_2)){
             query2.setVisible(false);
             query2.setEnabled(false);
-            queryErrorMessage.setText("Enter a Business");
-        } else if(jComboBox1.getSelectedItem() == "Find the Most Spread of Franchises in a State"){
+            queryErrorMessage.setText("Enter a User ID");
+        } else if(jComboBox1.getSelectedItem().equals(Q_3)){
             query2.setVisible(false);
             query2.setEnabled(false);
-            queryErrorMessage.setText("Enter a US State");
+            queryErrorMessage.setText("Enter a US State (Two letter Abreviation , i.e. TX for Texas)");
         } else {
             query2.setVisible(false);
             query2.setEnabled(false);
@@ -477,12 +549,6 @@ public class AppMain extends javax.swing.JFrame {
         queryErrorMessage.setText("");
         BusinessAttributes.resetFields();
         isFiltered = false;
-        /*
-        takeOutCheckBox.setSelected(false);
-        twentyFourHoursCheckBox.setSelected(false);
-        goodForKidsCheckBox.setSelected(false);
-        deliveryCheckBox.setSelected(false);
-        */
     }
     /**
      * @param args the command line arguments
