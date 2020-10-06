@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 /**
  *
  * @author arvin
@@ -419,6 +420,7 @@ public class AppMain extends javax.swing.JFrame {
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         Statement stmt;
+        resultsText.setText("");
         try {
             List<String> args = new ArrayList<>();
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -443,11 +445,11 @@ public class AppMain extends javax.swing.JFrame {
                     } else {
                        resultsText.setText(output);
                     }
-                    outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-                    outputDialog.setVisible(true);
+                    
                 }   
             }
-           
+            outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+            outputDialog.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -556,12 +558,8 @@ public class AppMain extends javax.swing.JFrame {
             business2 = business2.substring(0, business2.indexOf("\'")) + "\'" +
                     business2.substring(business2.indexOf("\'"));
         }
-        System.out.println(business1);
-        System.out.println(business2);
         String b2Id = getBusinessId(business2);
         String b1Id = getBusinessId(business1);
-        System.out.println(b2Id);
-        System.out.println(b1Id);
         Map<String, List<String>> userToBusiness = new HashMap<>();
         Map<String, List<String>> businessToUser = new HashMap<>();
         Queue<Node> queue = new LinkedList<>();
@@ -574,17 +572,16 @@ public class AppMain extends javax.swing.JFrame {
         visited.add(b1Id);
         while(!queue.isEmpty()) {
             node = queue.remove();
-            
             if(node.getCurrent_id().equals(b2Id)) {
                 output = node;
                 break;
             } else {
-                List<String> users = userToBusiness.get(node.getCurrent_id());
+                List<String> users = businessToUser.get(node.getCurrent_id());
                 if(users == null) {
                     users = new ArrayList<>();
                 }
                 for(String user : users) {
-                    List<String> businesses = businessToUser.get(user);
+                    List<String> businesses = userToBusiness.get(user);
                     if(businesses == null) {
                         businesses = new ArrayList<>();
                     }
@@ -601,10 +598,21 @@ public class AppMain extends javax.swing.JFrame {
         if(!node.getCurrent_id().equals(b2Id)) {
             System.out.println("There is no path between business 1 and business 2");
         }
+        Stack<String> userOutput = new Stack<>();
         while(output != null) {
             System.out.println(output.getUser_id());
+            String name = getUserName(output.getUser_id());
+            if(name != "") {
+                userOutput.push(name);
+            }
             output = output.getParent();
         }
+        
+        while(!userOutput.empty()) {
+            resultsText.append(userOutput.pop() + " to ");
+        }
+        resultsText.setText("Shortest Chain : " 
+                + resultsText.getText().substring(0, resultsText.getText().length() - 4));
     }
     private void getReviews(Map<String, List<String>> userToBusiness, Map<String, List<String>> businessToUser) {
         String query = "Select user_id, business_id FROM review WHERE stars > 2";     
@@ -646,6 +654,23 @@ public class AppMain extends javax.swing.JFrame {
             while(result.next()) {
                 String business_id = result.getString("business_id");
                 return business_id;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    
+    private String getUserName(String id){
+        String query = "SELECT name FROM users WHERE user_id = \'" + id + "\'";
+        
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(query);
+            
+            while(result.next()) {
+                String name = result.getString("name");
+                return name;
             }
         } catch (SQLException e) {
             e.printStackTrace();
