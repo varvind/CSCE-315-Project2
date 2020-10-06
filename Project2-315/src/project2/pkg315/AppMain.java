@@ -41,29 +41,6 @@ class WindowEventHandler extends WindowAdapter {
   }
 }
 
-class Node {
-    private Node parent;
-    private String current_id;
-    private String user_id;
-    public Node(Node parent, String current_id, String user_id) {
-        this.parent = parent;
-        this.current_id = current_id;
-        this.user_id = user_id;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public String getCurrent_id() {
-        return current_id;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-    
-}
 public class AppMain extends javax.swing.JFrame {
     private final static String Q_1 = "Find Shortest Chain Between Two Restuarants";
     private final static String Q_2 = "Get Review Statistics For a User";
@@ -430,23 +407,15 @@ public class AppMain extends javax.swing.JFrame {
             if(query.getText().equals("")) {
                queryErrorMessage.setText("Invalid Input : Please enter a User");
             } else {
-                if(questionBox.getSelectedItem().equals(Q_1) ){
+                if(questionBox.getSelectedItem().equals(Q_1)){
                     runQuestionOne();          
+                } else if (questionBox.getSelectedItem().equals(Q_2)) {
+                    runQuestionTwo();
+                } else if (questionBox.getSelectedItem().equals(Q_3)) {
+                    runQuestionThree();
                 } else {
-                    sqlStatement = createQuery(args);
-
-                    ResultSet result = stmt.executeQuery(sqlStatement);
-
-                    queryErrorMessage.setText("Searching....");
-                    String output = getFormattedQueryOutput(result, args);
-                    if(output.equals("")) {
-                        resultsText.setText("No Results Found");
-                        exportFile.setEnabled(false);
-                    } else {
-                       resultsText.setText(output);
-                    }
-                    
-                }   
+                    runQuestionFour();
+                }
             }
             outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
             outputDialog.setVisible(true);
@@ -454,98 +423,8 @@ public class AppMain extends javax.swing.JFrame {
             Logger.getLogger(AppMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_SearchActionPerformed
-    
-    private String createQuery(List<String> args) {
-        String sqlStatement = "";
-        if(questionBox.getSelectedItem().equals(Q_2)){
-            args.add("name");
-            args.add("avg_stars");
-            args.add("stars");
-            args.add("funny");
-            args.add("cool");
-            args.add("useful");
-            args.add("text");
-            sqlStatement += "SELECT NAME, avg_stars, r.text, r.stars, "
-                    + "r.funny, r.cool, r.useful FROM "
-                    + "(SELECT user_id, NAME, average_stars "
-                    + "AS avg_stars FROM users WHERE  user_id = " + 
-                    "\'" + query.getText() + "\'" + ") a "
-                    + "INNER JOIN review AS r ON a.user_id = r.user_id"; 
 
-        } else if(questionBox.getSelectedItem().equals(Q_3)){
-            args.add("name");
-            args.add("countinstate");
-            args.add("avgstars");
-            sqlStatement += "SELECT franCntInState.name, "
-                    + "franCntInState.countinstate, "
-                    + "rate.avgstars FROM "
-                    + "(SELECT Count(franInState.name) AS countInState,";
-            sqlStatement += "franInState.name FROM (SELECT b.name, "
-                    + "b.business_id FROM   (SELECT name, Count(name) "
-                    + "FROM   business GROUP  BY name "
-                    + "HAVING Count(name) > 1) fran "
-                    + "INNER JOIN business AS b ON b.name = "
-                    + "fran.name WHERE  b.state = \'" + query.getText() 
-                    + "\' ORDER  BY name) franInState GROUP  BY "
-                    + "franInState.name  ORDER  BY countinstate DESC) "
-                    + "franCntInState INNER JOIN (SELECT name, "
-                    + "Avg(stars) AS avgStars FROM business GROUP  "
-                    + "BY name) rate ON rate.name = franCntInState.name "
-                    + "WHERE  avgstars >= 3.5 ORDER  BY countinstate "
-                    + "DESC LIMIT 5 ";    
-        } else {
-            args.add("name");
-            args.add("text");
-
-            sqlStatement += "SELECT mostTip.name, mostTip.count, "
-                    + "tip.text FROM (SELECT nonFran.name, "
-                    + "nonFran.business_id, Count(name) "
-                    + "FROM (SELECT a.name, b.city, b.business_id "
-                    + "FROM (SELECT name, Count(name) FROM business "
-                    + "GROUP BY name HAVING Count(name) = 1) a INNER "
-                    + "JOIN business AS b ON b.name = a.name WHERE "
-                    + "city = " + "\'" + query.getText() + "\'" + ") "
-                    + "nonFran INNER JOIN tip AS t ON "
-                    + "nonFran.business_id = t.business_id GROUP "
-                    + "BY name, nonFran.business_id ORDER BY count "
-                    + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
-                    + "mostTip.business_id = tip.business_id";
-        }
-        return sqlStatement;
-    }
     
-    private String getFormattedQueryOutput(ResultSet result, List<String> args) {
-        String output = "";
-        int size = 0;
-        for(int i = 0; i < args.size(); i++) {
-            output += String.format("%-50s", args.get(i));
-        }
-        try {
-            output += "\n\n";
-            if(result != null) {
-                result.last();
-                size = result.getRow();
-            }
-            if(size == 0) {
-                return "";
-            }
-            result.first();
-            if(result != null) {
-                while(result.next()) {
-                   for(int i = 0; i < args.size(); i++) {
-                       String arg;
-                       output += String.format("%-50s", result.getString(args.get(i)));
-                   }
-                   output += "\n\n";
-                }
-            }
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-            queryErrorMessage.setText("Error in Query, Please try again");
-        }
-        
-        return output;
-    }
     
     private void runQuestionOne() {
         String business1 = query.getText();
@@ -558,124 +437,38 @@ public class AppMain extends javax.swing.JFrame {
             business2 = business2.substring(0, business2.indexOf("\'")) + "\'" +
                     business2.substring(business2.indexOf("\'"));
         }
-        String b2Id = getBusinessId(business2);
-        String b1Id = getBusinessId(business1);
-        Map<String, List<String>> userToBusiness = new HashMap<>();
-        Map<String, List<String>> businessToUser = new HashMap<>();
-        Queue<Node> queue = new LinkedList<>();
-        getReviews(userToBusiness, businessToUser);
-        Set<String> visited = new HashSet<>();
-        
-        Node node = new Node(null, b1Id, "");
-        Node output = null;
-        queue.add(node);
-        visited.add(b1Id);
-        while(!queue.isEmpty()) {
-            node = queue.remove();
-            if(node.getCurrent_id().equals(b2Id)) {
-                output = node;
-                break;
-            } else {
-                List<String> users = businessToUser.get(node.getCurrent_id());
-                if(users == null) {
-                    users = new ArrayList<>();
-                }
-                for(String user : users) {
-                    List<String> businesses = userToBusiness.get(user);
-                    if(businesses == null) {
-                        businesses = new ArrayList<>();
-                    }
-                    for(String business: businesses) {
-                        if(visited.add(business)) {
-                            Node newNode = new Node(node, business, user);
-                            queue.add(newNode);
-                        }
-                    }
-                }
-            }
-           
-        }
-        if(!node.getCurrent_id().equals(b2Id)) {
-            System.out.println("There is no path between business 1 and business 2");
-        }
-        Stack<String> userOutput = new Stack<>();
-        while(output != null) {
-            System.out.println(output.getUser_id());
-            String name = getUserName(output.getUser_id());
-            if(name != "") {
-                userOutput.push(name);
-            }
-            output = output.getParent();
-        }
-        
-        while(!userOutput.empty()) {
-            resultsText.append(userOutput.pop() + " to ");
-        }
-        resultsText.setText("Shortest Chain : " 
-                + resultsText.getText().substring(0, resultsText.getText().length() - 4));
+        Question1 q1 = new Question1(business1, business2, conn);
+        resultsText.setText(q1.getChain());       
     }
-    private void getReviews(Map<String, List<String>> userToBusiness, Map<String, List<String>> businessToUser) {
-        String query = "Select user_id, business_id FROM review WHERE stars > 2";     
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet result = stmt.executeQuery(query);
-            
-            while(result.next()) {
-                String user_id = result.getString("user_id");
-                String business_id = result.getString("business_id");
-                
-                if(userToBusiness.get(user_id) == null) {
-                    List<String> bus_ids = new ArrayList<>();
-                    bus_ids.add(business_id);
-                    userToBusiness.put(user_id, bus_ids);
-                } else {
-                    userToBusiness.get(user_id).add(business_id);
-                }
-                
-                if(businessToUser.get(business_id) == null) {
-                    List<String> user_ids = new ArrayList<>();
-                    user_ids.add(user_id);
-                    businessToUser.put(business_id, user_ids);
-                } else {
-                    businessToUser.get(business_id).add(user_id);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void runQuestionTwo() {
+        String user = query.getText();
+        Question2 q2 = new Question2(user, conn);
+        String output = q2.getUserStats();
+        if(output.contains("Error")) {
+            queryErrorMessage.setText(output);
+        } else {
+            resultsText.setText(output);
         }
     }
-    
-    private String getBusinessId(String business) {
-        String query = "SELECT business_id FROM business WHERE name = " + "\'" + business + "\'";
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet result = stmt.executeQuery(query);
-            
-            while(result.next()) {
-                String business_id = result.getString("business_id");
-                return business_id;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void runQuestionThree() {
+        String state = query.getText();
+        Question3 q3 = new Question3(state, conn);
+        String output = q3.getSpread();
+        if(output.contains("Error")) {
+            queryErrorMessage.setText(output);
+        } else {
+            resultsText.setText(output);
         }
-        return "";
     }
-    
-    private String getUserName(String id){
-        String query = "SELECT name FROM users WHERE user_id = \'" + id + "\'";
-        
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet result = stmt.executeQuery(query);
-            
-            while(result.next()) {
-                String name = result.getString("name");
-                return name;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void runQuestionFour() {
+        String city = query.getText();
+        Question4 q4 = new Question4(city, conn);
+        String output = q4.getBestLocalRestuarants();
+        if(output.contains("Error")) {
+            queryErrorMessage.setText(output);
+        } else {
+            resultsText.setText(output);
         }
-        return "";
     }
     private void exportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileActionPerformed
         // TODO add your handling code here:
