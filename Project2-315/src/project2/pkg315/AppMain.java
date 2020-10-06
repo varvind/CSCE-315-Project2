@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;  
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 /**
  *
  * @author arvin
@@ -32,6 +38,30 @@ class WindowEventHandler extends WindowAdapter {
           Logger.getLogger(WindowEventHandler.class.getName()).log(Level.SEVERE, null, ex);
       }
   }
+}
+
+class Node {
+    private Node parent;
+    private String current_id;
+    private String user_id;
+    public Node(Node parent, String current_id, String user_id) {
+        this.parent = parent;
+        this.current_id = current_id;
+        this.user_id = user_id;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public String getCurrent_id() {
+        return current_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+    
 }
 public class AppMain extends javax.swing.JFrame {
     private final static String Q_1 = "Find Shortest Chain Between Two Restuarants";
@@ -398,20 +428,24 @@ public class AppMain extends javax.swing.JFrame {
             if(query.getText().equals("")) {
                queryErrorMessage.setText("Invalid Input : Please enter a User");
             } else {
-                sqlStatement = createQuery(args);
-
-                ResultSet result = stmt.executeQuery(sqlStatement);
-
-                queryErrorMessage.setText("Searching....");
-                String output = getFormattedQueryOutput(result, args);
-                if(output.equals("")) {
-                    resultsText.setText("No Results Found");
-                    exportFile.setEnabled(false);
+                if(questionBox.getSelectedItem().equals(Q_1) ){
+                    runQuestionOne();          
                 } else {
-                   resultsText.setText(output);
-                }
-                outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-                outputDialog.setVisible(true);
+                    sqlStatement = createQuery(args);
+
+                    ResultSet result = stmt.executeQuery(sqlStatement);
+
+                    queryErrorMessage.setText("Searching....");
+                    String output = getFormattedQueryOutput(result, args);
+                    if(output.equals("")) {
+                        resultsText.setText("No Results Found");
+                        exportFile.setEnabled(false);
+                    } else {
+                       resultsText.setText(output);
+                    }
+                    outputDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+                    outputDialog.setVisible(true);
+                }   
             }
            
         } catch (SQLException ex) {
@@ -421,9 +455,7 @@ public class AppMain extends javax.swing.JFrame {
     
     private String createQuery(List<String> args) {
         String sqlStatement = "";
-        if(questionBox.getSelectedItem().equals(Q_1) ){
-                     
-        } else if(questionBox.getSelectedItem().equals(Q_2)){
+        if(questionBox.getSelectedItem().equals(Q_2)){
             args.add("name");
             args.add("avg_stars");
             args.add("stars");
@@ -513,6 +545,113 @@ public class AppMain extends javax.swing.JFrame {
         return output;
     }
     
+    private void runQuestionOne() {
+        String business1 = query.getText();
+        String business2 = query2.getText();
+        if(business1.contains("\'")) {
+            business1 = business1.substring(0, business1.indexOf("\'")) + "\'" +
+                    business1.substring(business1.indexOf("\'"));
+        }
+        if(business2.contains("\'")) {
+            business2 = business2.substring(0, business2.indexOf("\'")) + "\'" +
+                    business2.substring(business2.indexOf("\'"));
+        }
+        System.out.println(business1);
+        System.out.println(business2);
+        String b2Id = getBusinessId(business2);
+        String b1Id = getBusinessId(business1);
+        System.out.println(b2Id);
+        System.out.println(b1Id);
+        Map<String, List<String>> userToBusiness = new HashMap<>();
+        Map<String, List<String>> businessToUser = new HashMap<>();
+        Queue<Node> queue = new LinkedList<>();
+        getReviews(userToBusiness, businessToUser);
+        Set<String> visited = new HashSet<>();
+        
+        Node node = new Node(null, b1Id, "");
+        Node output = null;
+        queue.add(node);
+        visited.add(b1Id);
+        while(!queue.isEmpty()) {
+            node = queue.remove();
+            
+            if(node.getCurrent_id().equals(b2Id)) {
+                output = node;
+                break;
+            } else {
+                List<String> users = userToBusiness.get(node.getCurrent_id());
+                if(users == null) {
+                    users = new ArrayList<>();
+                }
+                for(String user : users) {
+                    List<String> businesses = businessToUser.get(user);
+                    if(businesses == null) {
+                        businesses = new ArrayList<>();
+                    }
+                    for(String business: businesses) {
+                        if(visited.add(business)) {
+                            Node newNode = new Node(node, business, user);
+                            queue.add(newNode);
+                        }
+                    }
+                }
+            }
+           
+        }
+        if(!node.getCurrent_id().equals(b2Id)) {
+            System.out.println("There is no path between business 1 and business 2");
+        }
+        while(output != null) {
+            System.out.println(output.getUser_id());
+            output = output.getParent();
+        }
+    }
+    private void getReviews(Map<String, List<String>> userToBusiness, Map<String, List<String>> businessToUser) {
+        String query = "Select user_id, business_id FROM review WHERE stars > 2";     
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(query);
+            
+            while(result.next()) {
+                String user_id = result.getString("user_id");
+                String business_id = result.getString("business_id");
+                
+                if(userToBusiness.get(user_id) == null) {
+                    List<String> bus_ids = new ArrayList<>();
+                    bus_ids.add(business_id);
+                    userToBusiness.put(user_id, bus_ids);
+                } else {
+                    userToBusiness.get(user_id).add(business_id);
+                }
+                
+                if(businessToUser.get(business_id) == null) {
+                    List<String> user_ids = new ArrayList<>();
+                    user_ids.add(user_id);
+                    businessToUser.put(business_id, user_ids);
+                } else {
+                    businessToUser.get(business_id).add(user_id);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private String getBusinessId(String business) {
+        String query = "SELECT business_id FROM business WHERE name = " + "\'" + business + "\'";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(query);
+            
+            while(result.next()) {
+                String business_id = result.getString("business_id");
+                return business_id;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
     private void exportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileActionPerformed
         // TODO add your handling code here:
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy.HH.mm.ss");  
