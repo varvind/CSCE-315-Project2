@@ -28,6 +28,10 @@ public class Question4 {
         sqlStatement = formatQuery();
     }
     
+    /**
+     * Find best local Restuarants given a city
+     * @return 
+     */
     public String getBestLocalRestuarants() {
         String output;
         try {
@@ -47,26 +51,36 @@ public class Question4 {
         return output;
     }
     
+    /**
+     * Formats SQL statement that will be executed
+     * @return 
+     */
     private String formatQuery() {
         args.add("name");
-            args.add("text");
+        args.add("text");
 
-            String query = "SELECT mostTip.name, mostTip.count, "
-                    + "tip.text FROM (SELECT nonFran.name, "
-                    + "nonFran.business_id, Count(name) "
-                    + "FROM (SELECT a.name, b.city, b.business_id "
-                    + "FROM (SELECT name, Count(name) FROM business "
-                    + "GROUP BY name HAVING Count(name) = 1) a INNER "
-                    + "JOIN business AS b ON b.name = a.name WHERE "
-                    + "city = " + "\'" + queryInput + "\'" + ") "
-                    + "nonFran INNER JOIN tip AS t ON "
-                    + "nonFran.business_id = t.business_id GROUP "
-                    + "BY name, nonFran.business_id ORDER BY count "
-                    + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
-                    + "mostTip.business_id = tip.business_id"; 
+        String query = "SELECT mostTip.name, mostTip.count, "
+                + "tip.text FROM (SELECT nonFran.name, "
+                + "nonFran.business_id, Count(name) "
+                + "FROM (SELECT a.name, b.city, b.business_id "
+                + "FROM (SELECT name, Count(name) FROM business "
+                + "GROUP BY name HAVING Count(name) = 1) a INNER "
+                + "JOIN business AS b ON b.name = a.name WHERE "
+                + "city = " + "\'" + queryInput + "\'" + ") "
+                + "nonFran INNER JOIN tip AS t ON "
+                + "nonFran.business_id = t.business_id GROUP "
+                + "BY name, nonFran.business_id ORDER BY count "
+                + "DESC LIMIT 1) mostTip INNER JOIN tip ON "
+                + "mostTip.business_id = tip.business_id"; 
         return query;
     }
     
+    /**
+     * Takes results from execution of SQL query and formats data for user output
+     * @param result
+     * @param args
+     * @return 
+     */
     private String getFormattedQueryOutput(ResultSet result, List<String> args) {
         String output = "";
         int size = 0;

@@ -117,6 +117,12 @@ public class Question1 {
         return chain;
         
     }
+    
+    /**
+     * Gets all reviews and establishes relationships between business and user
+     * @param userToBusiness
+     * @param businessToUser 
+     */
     private void getReviews(Map<String, List<String>> userToBusiness, Map<String, List<String>> businessToUser) {
         String query = "Select user_id, business_id FROM review WHERE stars > 2";     
         try {
@@ -148,6 +154,11 @@ public class Question1 {
         }
     }
     
+    /**
+     * Get the business id given a business name
+     * @param business
+     * @return 
+     */
     private String getBusinessId(String business) {
         String query = "SELECT business_id FROM business WHERE name = " + "\'" + business + "\'";
         try {
@@ -164,6 +175,11 @@ public class Question1 {
         return "";
     }
     
+    /**
+     * Get a user's name given their id
+     * @param id
+     * @return 
+     */
     private String getUserName(String id){
         String query = "SELECT name FROM users WHERE user_id = \'" + id + "\'";
         

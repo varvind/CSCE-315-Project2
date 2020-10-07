@@ -21,6 +21,7 @@ public class Question3 {
     private String queryInput;
     private Connection conn;
     private String sqlStatement;
+    
     public Question3(String queryInput, Connection conn) {
         args = new ArrayList<>();
         this.conn = conn;
@@ -28,6 +29,10 @@ public class Question3 {
         sqlStatement = formatQuery();
     }
     
+    /**
+     * Gets maximum spread for a given franchise in a state
+     * @return 
+     */
     public String getSpread() {
         String output;
         try {
@@ -47,6 +52,10 @@ public class Question3 {
         return output;
     }
     
+    /**
+     * Formats SQL statement that will be executed
+     * @return 
+     */
     private String formatQuery() {
         args.add("name");
         args.add("countinstate");
@@ -71,6 +80,12 @@ public class Question3 {
         return query;
     }
     
+    /**
+     * Takes results from execution of SQL query and formats data for user output
+     * @param result
+     * @param args
+     * @return 
+     */
     private String getFormattedQueryOutput(ResultSet result, List<String> args) {
         String output = "";
         int size = 0;

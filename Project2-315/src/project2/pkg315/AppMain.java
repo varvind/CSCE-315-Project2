@@ -30,6 +30,10 @@ import java.util.Stack;
  *
  * @author arvin
  */
+
+/**
+ * Listener waits to close the connection when the window closes
+ */
 class WindowEventHandler extends WindowAdapter {
   @Override
   public void windowClosing(WindowEvent evt) {
@@ -59,6 +63,7 @@ public class AppMain extends javax.swing.JFrame {
         Search.setEnabled(false);
     }
     
+    // Method is called from close window listener
     public static void closeConnection() throws SQLException{
         if(conn != null){
             conn.close();
@@ -378,6 +383,9 @@ public class AppMain extends javax.swing.JFrame {
             }
         }
         if(isLoggedIn) {
+            /**
+             * Enables the user to begin querying
+             */
             Search.setEnabled(true);
             query.setText("");
             query.setEditable(true);
@@ -397,13 +405,13 @@ public class AppMain extends javax.swing.JFrame {
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         Statement stmt;
-        resultsText.setText("");
+        outputMessage.setText("");
+        resultsText.setText(""); // reset output
         try {
             List<String> args = new ArrayList<>();
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
              //send statement to DBMS
             String sqlStatement = "";
-            System.out.println(query.getText());
             if(query.getText().equals("")) {
                queryErrorMessage.setText("Invalid Input : Please enter a User");
             } else {
